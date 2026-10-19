@@ -29,7 +29,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p "$RUNNER_TEMP/lee-laban-public"
-          cp index.html franchise.html *.css *.js .nojekyll "$RUNNER_TEMP/lee-laban-public/"
+          cp index.html menu.html franchise.html *.css *.js .nojekyll "$RUNNER_TEMP/lee-laban-public/"
           cp -R assets "$RUNNER_TEMP/lee-laban-public/assets"
           test -f "$RUNNER_TEMP/lee-laban-public/assets/logo-hd.webp"
           test -f "$RUNNER_TEMP/lee-laban-public/intro.js"
