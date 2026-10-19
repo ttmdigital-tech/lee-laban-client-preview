@@ -1,7 +1,7 @@
 (() => {
   const intro = document.querySelector('.site-intro');
   if (!intro) { document.documentElement.classList.remove('intro-pending'); return; }
-  const skip = intro.querySelector('button');
+  const logo = intro.querySelector('img');
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   let finished = false;
   let timer;
@@ -9,27 +9,33 @@
     if (finished) return;
     finished = true;
     clearTimeout(timer);
-    const hadFocus = intro.contains(document.activeElement);
     intro.remove();
     document.documentElement.classList.remove('intro-pending');
-    if (hadFocus) document.querySelector('.skip-link')?.focus({preventScroll:true});
     document.removeEventListener('keydown', onKey);
+    document.removeEventListener('focusin', finish);
   };
   const dismiss = () => {
+    if (finished) return;
     intro.classList.add('is-leaving');
     clearTimeout(timer);
     timer = setTimeout(finish, reducedMotion.matches ? 0 : 450);
   };
-  const onKey = event => {
-    if (event.key === 'Escape') dismiss();
-    // Keep keyboard navigation on the skip control until the page is visible.
-    if (event.key === 'Tab') { event.preventDefault(); skip.focus(); }
+  const onKey = event => { if (event.key === 'Escape') finish(); };
+  const reveal = () => {
+    if (finished) return;
+    clearTimeout(timer);
+    intro.classList.add('is-ready');
+    timer = setTimeout(dismiss, reducedMotion.matches ? 150 : 2000);
   };
-  timer = setTimeout(finish, reducedMotion.matches ? 200 : 2600);
-  skip.addEventListener('click', dismiss, {once:true});
+  // Wait for image decoding so slower phones get the complete logo reveal.
+  timer = setTimeout(finish, 4000);
   document.addEventListener('keydown', onKey);
-  intro.querySelector('img').addEventListener('error', finish, {once:true});
-  if (intro.querySelector('img').complete && !intro.querySelector('img').naturalWidth) finish();
-  // Restoring the page from the back-forward cache should never replay the intro.
+  document.addEventListener('focusin', finish, {once:true});
+  if (logo.decode) logo.decode().then(reveal, finish);
+  else if (logo.complete) logo.naturalWidth ? reveal() : finish();
+  else {
+    logo.addEventListener('load', reveal, {once:true});
+    logo.addEventListener('error', finish, {once:true});
+  }
   addEventListener('pageshow', event => { if (event.persisted) finish(); });
 })();
