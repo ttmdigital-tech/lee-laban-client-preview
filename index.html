@@ -5,9 +5,17 @@
   <meta name="theme-color" content="#0754d7"><meta name="description" content="Discover Lee Laban's Louh, Crispy Ummu Ali, Qusthuta and dessert specials. Find our branches and enjoy free home delivery up to 3 km.">
   <title>Lee Laban — Desserts & More</title><link rel="stylesheet" href="site.css?v=client-1">
   <link rel="icon" href="assets/logo.png">
+  <link rel="preload" href="assets/logo.png" as="image">
+  <link rel="stylesheet" href="intro.css?v=1">
+  <script>document.documentElement.classList.add('intro-pending');</script>
+  <script src="intro.js?v=1" defer></script>
   <script type="module" src="app.js"></script>
 </head>
 <body>
+  <div class="site-intro" aria-label="Welcome to Lee Laban">
+    <div class="site-intro-mark"><img src="assets/logo.png" alt="Lee Laban" width="180" height="180" fetchpriority="high"></div>
+    <button class="site-intro-skip" type="button">Skip intro <span aria-hidden="true">→</span></button>
+  </div>
   <a class="skip-link" href="#main">Skip to content</a>
   <div class="announcement"><span>Kuthuparamba · Thaliparamba · Matannur</span><span>FREE HOME DELIVERY UP TO 3 KM <b>↗</b></span></div>
   <header class="header">
