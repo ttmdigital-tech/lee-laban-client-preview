@@ -1,5 +1,6 @@
+import {productMedia} from './product-media.js?v=1';
 import {mapDestination} from './locations.js';
-import {categories,branches,menuItemCount} from './data.js?v=menu-39';
+import {categories,branches,menuItemCount} from './data.js?v=original-photos-1';
 import {enhanceIcons,initialiseUI} from './ui.js';
 const grid=document.querySelector('#product-grid');
 const status=document.querySelector('#menu-status');
@@ -27,7 +28,7 @@ export function renderCategory(categoryId=selectedCategory){
  grid.setAttribute('aria-label',categoryId==='all'?'All dessert collections':visible[0].name+' desserts');
  grid.replaceChildren(...products.map(({category,product})=>{
   const card=document.createElement('article');card.className='menu-product';
-  card.innerHTML=`<div class="menu-product-photo"><img src="${product.image}" alt="${category.name}: ${product.name}, enhanced from the supplied menu" loading="lazy" decoding="async" width="720" height="720"></div><div class="menu-product-copy"><span class="menu-product-category">${category.name}</span><div class="menu-product-heading"><h3>${product.name}</h3><span class="menu-product-price">₹${product.price}</span></div><button type="button" class="menu-product-order" aria-label="Choose a branch to order ${category.name} ${product.name}">Order from a branch <span>↗</span></button></div>`;
+  card.innerHTML=`<div class="menu-product-photo">${productMedia(product,category)}</div><div class="menu-product-copy"><span class="menu-product-category">${category.name}</span><div class="menu-product-heading"><h3>${product.name}</h3><span class="menu-product-price">₹${product.price}</span></div><button type="button" class="menu-product-order" aria-label="Choose a branch to order ${category.name} ${product.name}">Order from a branch <span>↗</span></button></div>`;
   card.querySelector('button').addEventListener('click',event=>openBranchChooser(event.currentTarget));
   enhanceIcons(card);return card;
  }));
@@ -58,7 +59,7 @@ if(isMenuPage){
  const featured=[['louh',0],['crispy',1],['qusthuta',0],['specials',4]];
  grid.innerHTML=featured.map(([id,index])=>{
   const category=categories.find(c=>c.id===id),product=category.products[index];
-  return `<article class="menu-product"><a class="menu-product-photo" href="menu.html?collection=${id}" aria-label="Explore ${category.name}"><img src="${product.image}" alt="${category.name}: ${product.name}" loading="lazy" decoding="async" width="720" height="720"></a><div class="menu-product-copy"><span class="menu-product-category">${category.name}</span><div class="menu-product-heading"><h3>${product.name}</h3><span class="menu-product-price">₹${product.price}</span></div><a class="menu-product-order" href="menu.html?collection=${id}">Explore the collection <span>↗</span></a></div></article>`;
+  return `<article class="menu-product"><a class="menu-product-photo" href="menu.html?collection=${id}" aria-label="Explore ${category.name}">${productMedia(product,category)}</a><div class="menu-product-copy"><span class="menu-product-category">${category.name}</span><div class="menu-product-heading"><h3>${product.name}</h3><span class="menu-product-price">₹${product.price}</span></div><a class="menu-product-order" href="menu.html?collection=${id}">Explore the collection <span>↗</span></a></div></article>`;
  }).join('');
  enhanceIcons(grid);
 }
