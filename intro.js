@@ -3,6 +3,7 @@
   if (!intro) { document.documentElement.classList.remove('intro-pending'); return; }
   const logo = intro.querySelector('img');
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  const phone = matchMedia('(max-width:760px)').matches;
   let finished = false;
   let timer;
   let deadline;
@@ -28,11 +29,11 @@
     if (finished) return;
     clearTimeout(timer);
     intro.classList.add('is-ready');
-    timer = setTimeout(dismiss, reducedMotion.matches ? 0 : 700);
+    timer = setTimeout(dismiss, reducedMotion.matches ? 0 : phone ? 400 : 700);
   };
   // The deadline stays independent of image decoding and the animation timers.
   // A slow or stalled image must never hold the page behind the intro.
-  deadline = setTimeout(finish, 1800);
+  deadline = setTimeout(finish, phone ? 1100 : 1800);
   try { if (sessionStorage.getItem('lee-intro-seen') === '1') { finish(); return; } } catch {}
   if (reducedMotion.matches) { finish(); return; }
   document.addEventListener('keydown', onKey);

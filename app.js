@@ -1,4 +1,4 @@
-import {productMedia} from './product-media.js?v=2';
+import {productMedia} from './product-media.js?v=3';
 import {mapDestination} from './locations.js';
 import {categories,branches,menuItemCount} from './data.js?v=retouched-photos-1';
 import {enhanceIcons,initialiseUI} from './ui.js';
