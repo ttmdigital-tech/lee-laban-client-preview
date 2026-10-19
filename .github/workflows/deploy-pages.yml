@@ -1,0 +1,42 @@
+name: Publish Lee Laban
+
+on:
+  push:
+    branches: [gh-pages]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: lee-laban-static-pages
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Check out the published website
+        uses: actions/checkout@v4
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: Prepare public files
+        shell: bash
+        run: |
+          mkdir -p "$RUNNER_TEMP/lee-laban-public"
+          cp index.html franchise.html *.css *.js .nojekyll "$RUNNER_TEMP/lee-laban-public/"
+          cp -R assets "$RUNNER_TEMP/lee-laban-public/assets"
+          test -f "$RUNNER_TEMP/lee-laban-public/assets/logo-hd.webp"
+          test -f "$RUNNER_TEMP/lee-laban-public/intro.js"
+      - name: Upload website
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ runner.temp }}/lee-laban-public
+      - name: Publish website
+        id: deployment
+        uses: actions/deploy-pages@v5
