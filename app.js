@@ -1,6 +1,6 @@
-import {productMedia} from './product-media.js?v=1';
+import {productMedia} from './product-media.js?v=2';
 import {mapDestination} from './locations.js';
-import {categories,branches,menuItemCount} from './data.js?v=original-photos-1';
+import {categories,branches,menuItemCount} from './data.js?v=retouched-photos-1';
 import {enhanceIcons,initialiseUI} from './ui.js';
 const grid=document.querySelector('#product-grid');
 const status=document.querySelector('#menu-status');
