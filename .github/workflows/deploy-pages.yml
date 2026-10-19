@@ -11,12 +11,12 @@ permissions:
   id-token: write
 
 concurrency:
-  group: lee-laban-static-pages
+  group: lee-laban-static-pages-ubuntu24
   cancel-in-progress: false
 
 jobs:
   publish:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
