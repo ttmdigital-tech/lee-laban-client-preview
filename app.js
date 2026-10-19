@@ -55,7 +55,7 @@ document.querySelector('#year').textContent=String(new Date().getFullYear());
 if(isMenuPage){
  const requested=new URLSearchParams(location.search).get('collection');
  renderCategory(categories.some(c=>c.id===requested)?requested:'all');
-}else{
+}else if(!grid.querySelector('.menu-product')){
  const featured=[['louh',0],['crispy',1],['qusthuta',0],['specials',4]];
  grid.innerHTML=featured.map(([id,index])=>{
   const category=categories.find(c=>c.id===id),product=category.products[index];
