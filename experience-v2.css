@@ -32,3 +32,6 @@ dialog[open]{animation:experience-dialog .35s var(--experience-ease)}dialog::bac
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.hero-art{translate:none!important}.menu-product:hover{transform:none}}
 .experience-ready .reveal{opacity:1;transform:none}
 @media(min-width:761px) and (prefers-reduced-motion:no-preference){.experience-ready .hero-art .orbit-two{animation:experience-orbit 9s ease-in-out infinite!important}.experience-paused .hero-art .orbit-two,.hero-outside .hero-art .orbit-two{animation-play-state:paused!important}}
+/* Do not fade already painted content when scripts or images finish loading. */
+.experience-ready .menu-product,.experience-ready .section-heading,.experience-ready .about-copy,.experience-ready .branch,.experience-ready .hero-copy,.experience-ready .hero-art{opacity:1}
+@media(hover:none),(pointer:coarse),(max-width:760px){body:before{display:none}.menu-product-photo img,.hero-desserts,.hero-art,.hero-mini-menu img,.franchise-feature-photo img{animation:none!important;transition:none!important}.menu-product:active .menu-product-photo img{transform:none}.hero-art{translate:none!important}}
