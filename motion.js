@@ -20,8 +20,8 @@ function watch(root=document){
 function startHero(){
  if(heroStarted||document.documentElement.classList.contains('intro-pending'))return;
  heroStarted=true;if(scrollY>180)return;
- document.querySelectorAll('.hero-copy .eyebrow,.hero-copy h1,.hero-copy>p,.hero-actions').forEach((element,index)=>play(element,[{opacity:0,transform:'translateY(28px)'},{opacity:1,transform:'translateY(0)'}],{duration:900,delay:80+index*115}));
- play(document.querySelector('.hero-art'),[{opacity:0,transform:'translateY(22px) scale(.96)'},{opacity:1,transform:'translateY(0) scale(1)'}],{duration:1200,delay:150});
+ document.querySelectorAll('.hero-copy .eyebrow,.hero-copy h1,.hero-copy>p,.hero-actions').forEach((element,index)=>play(element,[{opacity:0,transform:'translateY(28px)'},{opacity:1,transform:'translateY(0)'}],{duration:550,delay:index*55}));
+ play(document.querySelector('.hero-art'),[{opacity:0,transform:'translateY(22px) scale(.96)'},{opacity:1,transform:'translateY(0) scale(1)'}],{duration:650,delay:40});
 }
 function syncScroll(){
  frame=0;const max=document.documentElement.scrollHeight-innerHeight;
