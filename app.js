@@ -1,27 +1,34 @@
 import {mapDestination} from './locations.js';
-import {categories,branches} from './data.js';
-import {enhanceIcons,initialiseUI,transitionFlavour} from './ui.js';
+import {categories,branches,menuItemCount} from './data.js?v=menu-39';
+import {enhanceIcons,initialiseUI} from './ui.js';
 const grid=document.querySelector('#product-grid');
 const status=document.querySelector('#menu-status');
+const search=document.querySelector('#menu-search');
+let selectedCategory='all';
+document.querySelector('#category-controls').innerHTML=`<button type="button" data-category="all" aria-pressed="true">All desserts <span>${menuItemCount}</span></button>`+categories.map(c=>`<button type="button" data-category="${c.id}" aria-pressed="false">${c.name} <span>${String(c.products.length).padStart(2,'0')}</span></button>`).join('');
 
-export function renderCategory(categoryId='all'){
- const visible=categoryId==='all'?categories:categories.filter(c=>c.id===categoryId);if(!visible.length)return;
+export function renderCategory(categoryId=selectedCategory){
+ selectedCategory=categoryId;
+ const query=(search.value||'').trim().toLocaleLowerCase();
+ const visible=categoryId==='all'?categories:categories.filter(c=>c.id===categoryId);
+ const products=visible.flatMap(category=>category.products.map(product=>({category,product}))).filter(({category,product})=>`${category.name} ${product.name}`.toLocaleLowerCase().includes(query));
  document.querySelectorAll('[data-category]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.category===categoryId)));
- document.querySelector('#category-note').textContent=categoryId==='all'?'Browse a collection. Use the arrows to change flavours.':visible[0].note;
- const total=visible.reduce((n,c)=>n+c.products.length,0);document.querySelector('#category-count').textContent=String(total).padStart(2,'0')+' FLAVOURS TO EXPLORE';
- grid.classList.toggle('single-collection',visible.length===1);grid.setAttribute('aria-label',categoryId==='all'?'All dessert collections':visible[0].name+' desserts');
- grid.replaceChildren(...visible.map(category=>{
-  let index=0;const card=document.createElement('article');card.className='dessert-card';
-  card.innerHTML=`<div class="dessert-card-title"><h3>${category.name}</h3><span>${String(category.products.length).padStart(2,'0')} FLAVOURS</span></div><div class="dessert-card-image"><img src="assets/${category.id}-fast.webp" alt="${category.name} collection illustration" loading="lazy"><small>COLLECTION ILLUSTRATION</small></div><div class="dessert-card-body"><div class="dessert-flavour-heading"><h4></h4><span class="dessert-price"></span></div><p>${category.note}</p><div class="dessert-flavour-picker"><button type="button" class="flavour-prev" aria-label="Previous ${category.name} flavour">←</button><span class="flavour-position"></span><button type="button" class="flavour-next" aria-label="Next ${category.name} flavour">→</button></div><button type="button" class="dessert-order">Order from a branch <span>↗</span></button></div>`;
-  const update=()=>{const p=category.products[index];card.querySelector('h4').textContent=p.name;card.querySelector('.dessert-price').textContent='₹'+p.price;card.querySelector('.flavour-position').textContent=String(index+1).padStart(2,'0')+' / '+String(category.products.length).padStart(2,'0');card.querySelector('.dessert-order').setAttribute('aria-label','Choose a branch to order '+category.name+' '+p.name);};
-  card.querySelector('.flavour-prev').addEventListener('click',()=>{index=(index-1+category.products.length)%category.products.length;update();transitionFlavour(card.querySelector('.dessert-flavour-heading'));status.textContent=category.name+': '+category.products[index].name+', ₹'+category.products[index].price;});
-  card.querySelector('.flavour-next').addEventListener('click',()=>{index=(index+1)%category.products.length;update();transitionFlavour(card.querySelector('.dessert-flavour-heading'));status.textContent=category.name+': '+category.products[index].name+', ₹'+category.products[index].price;});
-  card.querySelector('.dessert-order').addEventListener('click',e=>openBranchChooser(e.currentTarget));update();enhanceIcons(card);return card;
+ document.querySelector('#category-note').textContent=categoryId==='all'?'Every dessert, every flavour. Find your favourite.':visible[0].note;
+ document.querySelector('#category-count').textContent=products.length+' '+(products.length===1?'DESSERT':'DESSERTS');
+ grid.classList.add('catalogue-grid');
+ grid.setAttribute('aria-label',categoryId==='all'?'All dessert collections':visible[0].name+' desserts');
+ grid.replaceChildren(...products.map(({category,product})=>{
+  const card=document.createElement('article');card.className='menu-product';
+  card.innerHTML=`<div class="menu-product-photo"><img src="${product.image}" alt="${category.name}: ${product.name}, enhanced from the supplied menu" loading="lazy" decoding="async" width="720" height="720"></div><div class="menu-product-copy"><span class="menu-product-category">${category.name}</span><div class="menu-product-heading"><h3>${product.name}</h3><span class="menu-product-price">₹${product.price}</span></div><button type="button" class="menu-product-order" aria-label="Choose a branch to order ${category.name} ${product.name}">Order from a branch <span>↗</span></button></div>`;
+  card.querySelector('button').addEventListener('click',event=>openBranchChooser(event.currentTarget));
+  enhanceIcons(card);return card;
  }));
- status.textContent=categoryId==='all'?'All four collections shown. Use the arrows to explore 16 flavours.':visible[0].name+': use the arrows to explore '+total+' flavours.';
+ if(!products.length){const empty=document.createElement('p');empty.className='menu-empty';empty.textContent='No desserts found. Try another flavour or collection.';grid.append(empty);}
+ status.textContent=`Showing ${products.length} of ${menuItemCount} menu entries.`;
 }
 document.querySelectorAll('[data-category]').forEach(button=>button.addEventListener('click',()=>renderCategory(button.dataset.category)));
-document.querySelectorAll('[data-hero-category]').forEach(a=>a.addEventListener('click',()=>renderCategory(a.dataset.heroCategory)));
+search.addEventListener('input',()=>renderCategory());
+document.querySelectorAll('[data-hero-category]').forEach(link=>link.addEventListener('click',()=>{search.value='';renderCategory(link.dataset.heroCategory);}));
 const navigation=document.querySelector('#navigation');
 const menuToggle=document.querySelector('.menu-toggle');
 function closeNavigation(restoreFocus=false){navigation.classList.remove('open');menuToggle.setAttribute('aria-expanded','false');menuToggle.setAttribute('aria-label','Open navigation');if(restoreFocus)menuToggle.focus();}
@@ -42,7 +49,7 @@ const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)');
 
 const fullMenu=document.querySelector('#full-menu');let menuTrigger=null;
 document.querySelector('.full-menu-nav').innerHTML=categories.map(c=>`<a href="#full-${c.id}">${c.name}</a>`).join('');
-document.querySelector('#full-menu-content').innerHTML=categories.map((c,index)=>`<section id="full-${c.id}" class="full-menu-category"><div class="full-category-photo"><img src="assets/${c.id}-fast.webp" alt="${c.name} collection illustration" loading="lazy"><span>0${index+1} / ${c.name.toUpperCase()}</span></div><div class="full-category-list"><span class="eyebrow">0${index+1} / THE COLLECTION</span><h3>${c.name}</h3><p>${c.note}</p><ul>${c.products.map(p=>`<li><span>${p.name}</span><strong>₹${p.price}</strong></li>`).join('')}</ul><button class="text-link" type="button" data-menu-order>Order from a branch ↗</button></div></section>`).join('');
+document.querySelector('#full-menu-content').innerHTML=categories.map((c,index)=>`<section id="full-${c.id}" class="full-menu-category"><div class="full-category-photo"><img src="${c.products[0].image}" alt="${c.name} from the supplied menu" loading="lazy"><span>0${index+1} / ${c.name.toUpperCase()}</span></div><div class="full-category-list"><span class="eyebrow">0${index+1} / THE COLLECTION</span><h3>${c.name}</h3><p>${c.note}</p><ul>${c.products.map(p=>`<li><img class="full-menu-product-thumb" src="${p.image}" alt="" loading="lazy" width="64" height="64"><span>${p.name}</span><strong>₹${p.price}</strong></li>`).join('')}</ul><button class="text-link" type="button" data-menu-order>Order from a branch ↗</button></div></section>`).join('');
 document.querySelectorAll('[data-full-menu]').forEach(link=>link.addEventListener('click',event=>{event.preventDefault();menuTrigger=link;fullMenu.showModal();fullMenu.scrollTop=0;document.querySelector('.full-menu-close').focus();document.body.classList.add('dialog-active');}));
 document.querySelector('.full-menu-close').addEventListener('click',()=>fullMenu.close());
 fullMenu.querySelector('.brand').addEventListener('click',event=>{event.preventDefault();fullMenu.close();});

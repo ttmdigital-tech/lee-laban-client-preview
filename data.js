@@ -1,9 +1,16 @@
-const product=(name,price,crop)=>({name,price,image:'assets/menu-poster.png',alt:`${name} dessert from the Lee Laban menu`,crop});
+const product=(name,price,image)=>({name,price,image:`assets/products/${image}.webp`,alt:`Lee Laban ${name}`});
+const bowlFlavours=['Nutella','Lotus','Kinder','Pistachio Nutella','Pistachio Kinder','Kinder Nutella','Pistachio Lotus','Trio'];
+const bowlImages=['nutella','lotus','kinder','pistachio-nutella','pistachio-kinder','kinder-nutella','pistachio-lotus','trio'];
+const bowls=()=>bowlFlavours.map((name,index)=>product(name,350,`bowl-${bowlImages[index]}`));
 export const categories=[
- {id:'louh',name:'Louh',note:'Nutella, Lotus or Kinder.',products:[product('Nutella',350,[124,337,100,68]),product('Lotus',350,[251,337,117,70]),product('Kinder',350,[386,338,100,68])]},
- {id:'specials',name:'Specials',note:'Cheese Bomb, Heba Cake and more.',products:[product('Cheese Bomb',290,[78,482,103,66]),product('Heba Cake',380,[208,485,109,63]),product('Creme de la Creme',380,[334,483,111,66]),product('Kabsa',380,[454,485,100,63])]},
- {id:'crispy',name:'Crispy Ummu Ali',note:'Five flavours to choose from.',products:[product('Pistachio',350,[78,654,83,80]),product('Nutella',350,[180,655,84,79]),product('Lotus',350,[280,654,84,80]),product('Pistachio Lotus',350,[384,655,84,79]),product('Pistachio Nutella',350,[481,654,86,80])]},
- {id:'qusthuta',name:'Qusthuta',note:'Four flavours. Served in a tray.',products:[product('Nutella',290,[86,868,106,56]),product('Strawberry',290,[214,868,99,56]),product('Tender',290,[337,868,100,56]),product('Pistachio Nutella',290,[459,868,99,56])]}
+ {id:'louh',name:'Louh',note:'Three classic flavours. ₹350 each.',products:bowls().slice(0,3)},
+ {id:'salankatia',name:'Salankatia',note:'Eight flavour combinations. ₹350 each.',products:bowls()},
+ {id:'koshari',name:'Koshari',note:'Eight flavour combinations. ₹350 each.',products:bowls()},
+ {id:'crispy',name:'Crispy Ummu Ali',note:'Five flavours. ₹350 each.',products:[product('Pistachio Nutella',350,'crispy-pistachio-nutella'),product('Pistachio',350,'crispy-pistachio'),product('Nutella',350,'crispy-nutella'),product('Lotus',350,'crispy-lotus'),product('Pistachio Lotus',350,'crispy-pistachio-lotus')]},
+ {id:'qusthuta',name:'Qusthuta',note:'Four flavours, served in a tray. ₹290 each.',products:[product('Strawberry',290,'qusthuta-strawberry'),product('Tender',290,'qusthuta-tender'),product('Pistachio Nutella',290,'qusthuta-pistachio-nutella'),product('Nutella',290,'qusthuta-nutella')]},
+ {id:'specials',name:'Specials',note:'Cakes, kunafa and signature desserts.',products:[product('Cheese Bomb',290,'cheese-bomb'),product('Hebba Cake',380,'hebba-cake'),product('Kabsa',380,'kabsa'),product('Creme de la Creme',380,'creme-de-la-creme'),product('Kunafa Bel Manga',380,'kunafa-bel-manga'),product('Fazea Chocola Kake',490,'fazea-chocola-kake'),product('Wonder Women',320,'wonder-women'),product('De Paris',420,'de-paris'),product('Elsabika',450,'elsabika'),product('Lazy Cat',250,'lazy-cat')]},
+ {id:'bars',name:'Hazelnut Bar',note:'The hazelnut bar from our menu.',products:[product('Hazelnut Bar',690,'hazelnut-bar')]}
 ];
+export const menuItemCount=categories.reduce((total,category)=>total+category.products.length,0);
 export const branches=[{name:'Kuthuparamba',phone:'+919539425262',status:'open'},{name:'Thaliparamba',phone:'+919562369934',status:'open'},{name:'Matannur',phone:'+919539425237',status:'open'},{name:'Panoor',phone:null,status:'soon'}];
 export const franchisePhone='+919108664784';
